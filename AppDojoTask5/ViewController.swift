@@ -30,31 +30,32 @@ class ViewController: UIViewController {
 	@IBAction private func tappedCalButton(_ sender: Any) {
 		do{
 			let result = try calField()
-			resultLabel.text = String(result)
-		}catch let error as UserError{
-			// OKボタンの処理
-			let oKAction: UIAlertAction = UIAlertAction(title: "OK", style: UIAlertAction.Style.cancel)
+			resultLabel.text = String(format: "%.5f",result)
+		} catch let error as UserError {
 
 			switch error {
 			case .emptyLeftTextField:
-				let alert: UIAlertController = UIAlertController(title: "課題5", message:  "割られる数を入力してください", preferredStyle:  UIAlertController.Style.alert)
-				print("割られる数の入力がありません")
-				alert.addAction(oKAction)
-				present(alert, animated: true, completion: nil)
+				showAlert(message: "割られる数を入力してください")
 			case .emptyRightTextField:
-				let alert: UIAlertController = UIAlertController(title: "課題5", message:  "割る数を入力してください", preferredStyle:  UIAlertController.Style.alert)
-				print("割る数の入力がありません")
-				alert.addAction(oKAction)
-				present(alert, animated: true, completion: nil)
+				showAlert(message: "割る数を入力してください")
 			case .divisionByZero:
-				let alert: UIAlertController = UIAlertController(title: "課題5", message:  "割る数には0を入力しないでください", preferredStyle:  UIAlertController.Style.alert)
-				print("0除算になっています")
-				alert.addAction(oKAction)
-				present(alert, animated: true, completion: nil)
+				showAlert(message: "割る数には0を入力しないでください")
 			}
-		}catch {
+		} catch {
 			print("その他のエラーです")
 		}
+	}
+
+	// アラートを表示する関数
+	private func showAlert(message: String){
+		// OKボタンの処理
+		let oKAction: UIAlertAction = UIAlertAction(title: "OK", style: UIAlertAction.Style.cancel)
+
+		let alert: UIAlertController = UIAlertController(title: "課題5", message: message, preferredStyle:  UIAlertController.Style.alert)
+
+		alert.addAction(oKAction)
+		present(alert, animated: true, completion: nil)
+
 	}
 
 	// 計算を行う関数
@@ -70,11 +71,10 @@ class ViewController: UIViewController {
 		let value1 = Int(leftTextField.text!) ?? 0
 		let value2 = Int(rightTextField.text!) ?? 0
 
-		// ゼロ除算になる場合にはエラーを投げる
 		guard value2 != 0 else {
 			throw UserError.divisionByZero
 		}
-		return Float(value1 / value2)
+		return Float(value1) / Float(value2)
 	}
 }
 
